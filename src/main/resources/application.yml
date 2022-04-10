@@ -1,0 +1,11 @@
+db:
+  username: postgres
+  password: 4y7sV96vA9wv46VR
+
+spring:
+  r2dbc:
+    #url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: r2dbc:postgresql://localhost:5432/user_mgm
+    username: postgres
+    password: 4y7sV96vA9wv46VR
+

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package com.cloudbeds.usermgm.generated.grpc;
+
+message Address {
+  int32 addressId= 1;
+  string address1 = 2;
+  string address2 = 3;
+  string city = 4;
+  string state = 5;
+  string country = 6;
+}
+
+message AddressList {
+  repeated Address address = 1;
+}
+
+message GetUserRequest {
+  int32 userId = 1;
+}
+
+message GetUserResponse {
+  int32 userId = 1;
+  string lastName = 2;
+  string firstName = 3;
+  string email = 4;
+  AddressList addresses = 5;
+}
+
+message ErrorResponse {
+  int32 userId = 1;
+}
+
+service UserService {
+  rpc retrieveUser(GetUserRequest) returns (GetUserResponse);
+}
