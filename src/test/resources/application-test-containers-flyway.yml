@@ -3,3 +3,9 @@ spring:
     url: r2dbc:tc:postgresql:///user_mgm?TC_IMAGE_TAG=9.6.8
     username: test
     password: test
+
+  flyway:
+    url: jdbc:postgresql://localhost:5432/user_mgm
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+

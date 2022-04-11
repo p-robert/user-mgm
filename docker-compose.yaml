@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  user-mgm:
+    build: .
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    environment:
+      DB_HOST: user-mgm-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    depends_on:
+      - user-mgm-db
+
+  user-mgm-db:
+    container_name: user-mgm-db
+    image: postgres:14.2
+    restart: always
+    ports:
+      - '15432:5432'
+    volumes:
+      - user-mgm-db:/var/lib/postgresql/data
+
+    environment:
+       POSTGRES_DB: "postgres"
+       POSTGRES_USER: "postgres"
+       POSTGRES_PASSWORD: "postgres"
+
+volumes:
+  user-mgm-db:
+    driver: local

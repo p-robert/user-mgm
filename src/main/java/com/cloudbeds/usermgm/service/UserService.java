@@ -3,6 +3,7 @@ package com.cloudbeds.usermgm.service;
 import com.cloudbeds.usermgm.entity.AddressEntity;
 import com.cloudbeds.usermgm.entity.UserAddressEntity;
 import com.cloudbeds.usermgm.errors.AddressNotFoundException;
+import com.cloudbeds.usermgm.errors.UserAlreadyExistsException;
 import com.cloudbeds.usermgm.errors.UserNotFoundException;
 import com.cloudbeds.usermgm.mapper.AddressMapper;
 import com.cloudbeds.usermgm.mapper.UserMapper;
@@ -34,21 +35,26 @@ public class UserService {
     private final AddressMapper addressMapper;
 
     public Mono<UserResponse> createUser(CreateUserRequest createUserRequest) {
-        return Mono.just(createUserRequest)
+        return userRepository.findUserByEmail(createUserRequest.getEmail())
+                .flatMap(existingUser -> Mono.error(new UserAlreadyExistsException(existingUser.getEmail())))
+                .map(UserResponse.class::cast)
+                .switchIfEmpty(Mono.defer(() -> Mono.just(createUserRequest)
                 .map(userMapper::toEntity)
                 .flatMap(userRepository::save)
                 .map(userMapper::toResponse)
-                .flatMap(this::addUserAddresses);
+                .flatMap(this::addUserAddresses)));
     }
 
     public Flux<UserResponse> getUsersByCountry(String country) {
         return userRepository.findUsersByCountry(country)
-                .map(userMapper::toResponse);
+                .map(userMapper::toResponse)
+                .flatMap(this::addUserAddresses);
     }
 
     public Mono<UserResponse> findUserById(Integer userId) {
         return userRepository.findById(userId)
-                .map(userMapper::toResponse);
+                .map(userMapper::toResponse)
+                .flatMap(this::addUserAddresses);
     }
 
     public Mono<UserResponse> addUserAddress(Integer userId, AddUserAddressRequest address) {
@@ -59,14 +65,12 @@ public class UserService {
                 .flatMap(addressRepository::findById)
                 .switchIfEmpty(Mono.defer(() -> Mono.error(new AddressNotFoundException(address.getAddressId()))))
                 .map(AddressEntity::getAddressId)
-                .map(addressId -> {
-                    UserAddressEntity userAddressEntity = UserAddressEntity.builder().addressId(addressId).userId(userId).build();
-                    return userAddressEntity;
-                })
+                .map(addressId -> UserAddressEntity.builder().addressId(addressId).userId(userId).build())
                 .flatMap(userAddressRepository::save)
                 .map(UserAddressEntity::getUserId)
                 .flatMap(userRepository::findById)
-                .map(userMapper::toResponse);
+                .map(userMapper::toResponse)
+                .flatMap(this::addUserAddresses);
     }
 
     private Mono<List<AddressResponse>> getUserAddresses(UserResponse user) {

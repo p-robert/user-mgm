@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "A request to create an address", name = "CreateAddressRequestDTO")
+@Schema(description = "A request to create an address", name = "CreateAddressRequest")
 public class CreateAddressRequest {
 
     @Schema(description = "The first address line", required = true)

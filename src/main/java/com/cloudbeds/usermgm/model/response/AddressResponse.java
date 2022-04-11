@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(description = "A response containing an address", name = "AddressResponseDTO")
+@Schema(description = "A response containing an address", name = "AddressResponse")
 public class AddressResponse {
 
     @Schema(description = "The address Id")

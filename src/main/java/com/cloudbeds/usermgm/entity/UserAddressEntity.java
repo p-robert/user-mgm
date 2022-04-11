@@ -19,7 +19,7 @@ public class UserAddressEntity {
     @Column(value = "id")
     private Integer id;
 
-    @Column(value = "id")
+    @Column(value = "user_id")
     private Integer userId;
     @Column(value = "address_id")
     private Integer addressId;

@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -24,12 +25,9 @@ public class UserController implements UserContract {
     private final UserService userService;
 
     @Override
-    public Mono<ResponseEntity<UserResponse>> createUser(@NonNull CreateUserRequest createUserRequest, ServerHttpRequest request) {
+    public Mono<ResponseEntity<UserResponse>> createUser(@Valid @NonNull CreateUserRequest createUserRequest, ServerHttpRequest request) {
         return userService.createUser(createUserRequest)
-                .map(user -> ResponseEntity
-                        .created(buildUri(request, user))
-                        .body(user)
-                );
+                .map(user -> ResponseEntity.created(buildUri(request, user)).body(user));
     }
 
     private URI buildUri(ServerHttpRequest request, UserResponse user) {

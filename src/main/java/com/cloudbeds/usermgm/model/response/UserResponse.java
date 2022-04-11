@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
-@Schema(description = "A response containing an user", name = "UserResponseDTO")
+@Schema(description = "A response containing an user", name = "UserResponse")
 @With
 public class UserResponse {
 
